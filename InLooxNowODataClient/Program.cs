@@ -1,4 +1,4 @@
-﻿using InLooxODataV9;
+﻿using InLooxOData;
 using IQmedialab.InLoox.Data.BusinessObjects;
 using Microsoft.OData.Client;
 using System;
@@ -20,7 +20,7 @@ namespace InLooxnowClient
             var tokenResponse = ODataBasics.GetToken(endPoint, username, password).Result;
 
             // in case multiple accounts exists
-            if (tokenResponse.Error != null)
+            if (tokenResponse.Error != null && tokenResponse.Error != "invalid_grant")
             {
                 var accounts = tokenResponse.GetAccounts();
 
@@ -29,7 +29,7 @@ namespace InLooxnowClient
                 tokenResponse = ODataBasics.GetToken(endPoint, username, password, myAccount.Id).Result;
             }
 
-            if (tokenResponse == null)
+            if (tokenResponse?.AccessToken == null)
             {
                 Console.WriteLine("Login invalid");
                 return;
@@ -57,7 +57,7 @@ namespace InLooxnowClient
             // if you only need to read from the query a ToList() is ok.
             var docs = new DataServiceCollection<DocumentView>(query);
 
-            Console.WriteLine(docs.Count());
+            Console.WriteLine($"found {docs.Count()} document{(docs.Count() > 1 ? "s" : String.Empty)}:");
 
             foreach (var d in docs)
                 Console.WriteLine(d.FileName);

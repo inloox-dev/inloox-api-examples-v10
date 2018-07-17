@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InLooxNowODataClient", "InLooxNowODataClient\InLooxNowODataClient.csproj", "{DE4ABD55-47DC-45FE-B53F-3269CBC6A7CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InLooxODataV9", "InLooxODataV9\InLooxODataV9.csproj", "{F0C28061-09FB-45E1-958D-500ECEAE7CB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InLooxOData", "InLooxODataV10\InLooxOData.csproj", "{F0C28061-09FB-45E1-958D-500ECEAE7CB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E7D8B37D-8487-44B0-9CC0-E93D46B6542C}
 	EndGlobalSection
 EndGlobal
