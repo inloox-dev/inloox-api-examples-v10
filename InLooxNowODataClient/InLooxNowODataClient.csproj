@@ -62,7 +62,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InLooxODataV10\InLooxOData.csproj">
+    <ProjectReference Include="..\InLooxOData\InLooxOData.csproj">
       <Project>{f0c28061-09fb-45e1-958d-500eceae7cb8}</Project>
       <Name>InLooxOData</Name>
     </ProjectReference>
