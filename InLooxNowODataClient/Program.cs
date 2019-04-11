@@ -1,6 +1,7 @@
-﻿using InLooxOData;
+﻿using Default;
+using InLooxnowClient.Examples;
+using InLooxOData;
 using IQmedialab.InLoox.Data.BusinessObjects;
-using Microsoft.OData.Client;
 using System;
 using System.Linq;
 
@@ -10,70 +11,50 @@ namespace InLooxnowClient
     {
         static void Main(string[] args)
         {
-
             var endPoint = new Uri("https://app.inlooxnow.com/");
             var endPointOdata = new Uri(endPoint, "odata/");
 
             var username = "user@inloox.com";
             var password = "";
 
-            var tokenResponse = ODataBasics.GetToken(endPoint, username, password).Result;
+            var tokenResponse = ODataBasics.GetToken(endPoint, username, password)
+                .Result;
 
-            // in case multiple accounts exists
-            if (tokenResponse.Error != null && tokenResponse.Error != "invalid_grant")
-            {
-                var accounts = tokenResponse.GetAccounts();
-
-                // filter correct account by name
-                var myAccount = accounts.FirstOrDefault(k => k.Name.StartsWith("000000"));
-                tokenResponse = ODataBasics.GetToken(endPoint, username, password, myAccount.Id).Result;
-            }
+            // Example for logon with multiple accounts
+            //tokenResponse = Logon.LogonMultipleAccounts(endPoint, username, password, "accountName");
 
             if (tokenResponse?.AccessToken == null)
             {
                 Console.WriteLine("Login invalid");
+                Console.ReadLine();
                 return;
             }
 
-            var context = ODataBasics.GetInLooxContext(endPointOdata, tokenResponse.AccessToken);
-            // lookup custom field "DocTest" id
-            var ceDefaults = context.customexpanddefaultextend.ToList();
-            var cedDocument = ceDefaults.FirstOrDefault(k => k.DisplayName == "DocTest");
+            // get Current Contact info
+            var context = ODataBasics.GetInLooxContext(endPointOdata,
+                tokenResponse.AccessToken);
 
-            if (cedDocument == null)
-            {
-                Console.WriteLine("Custom field 'DocTest' not found");
-                return;
-            }
+            var contact = GetCurrentContact(context);
+            Console.WriteLine($"Username: {contact.Name}");
 
-            // build query for all documents with custom field 'DocTest' set to true.
-            var query = context.documentview
-                .Where(k => k.CustomExpand.Any(ce => ce.CustomExpandDefaultId == cedDocument.CustomExpandDefaultId && ce.BoolValue == true))
-                .OrderBy(k => k.FileName)
-                .Skip(0)
-                .Take(10);
+            Console.WriteLine("----Example 1: Update Custom field on document  ----");
+            var documentOperations = new DocumentQueries(context);
+            documentOperations.UpdateDocumentCustomField();
 
-            // need to use DataServiceCollection to use the PostOnlySetProperties feature
-            // if you only need to read from the query a ToList() is ok.
-            var docs = new DataServiceCollection<DocumentView>(query);
+            Console.WriteLine("----Example 2: Query,Update & create InLoox task----");
+            var taskOperations = new TaskQueries(context);
+            taskOperations.QueryInLooxTask();
+            var task = taskOperations.CreateInLooxTask();
+            taskOperations.UpdateInLooxTask(task);
 
-            Console.WriteLine($"found {docs.Count()} document{(docs.Count() > 1 ? "s" : String.Empty)}:");
+            Console.WriteLine("done");
+            Console.ReadLine();
+        }
 
-            foreach (var d in docs)
-                Console.WriteLine(d.FileName);
-
-            // change document state
-            if (docs.Count > 0)
-            {
-                var doc = docs.FirstOrDefault();
-                doc.State = "Updated " + DateTime.Now;
-
-                // only update the modfied properties
-                context.SaveChangesDefaultOptions = SaveChangesOptions.PostOnlySetProperties;
-
-                context.UpdateObject(doc);
-                context.SaveChanges();
-            }
+        private static Contact GetCurrentContact(Container ctx)
+        {
+            var user = ctx.contact.getauthenticated();
+            return user.First();
         }
     }
 }

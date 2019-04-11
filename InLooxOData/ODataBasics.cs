@@ -1,4 +1,5 @@
 ﻿using Default;
+using Microsoft.OData.Client;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -44,12 +45,12 @@ namespace InLooxOData
             {
                 public TokenAccount(string name, Guid id)
                 {
-                    this.Name = name;
-                    this.Id = id;
+                    Name = name;
+                    Id = id;
                 }
 
-                public string Name { get; private set; }
-                public Guid Id { get; private set; }
+                public string Name { get; }
+                public Guid Id { get; }
             }
         }
 
@@ -59,6 +60,13 @@ namespace InLooxOData
             context.SendingRequest2 += (sender, eventArgs) =>
             {
                 eventArgs.RequestMessage.SetHeader("Authorization", "bearer " + bearerToken);
+            };
+
+            context.ReceivingResponse += (sender, e) =>
+            {
+                // setup location header for odata 4
+                var header = e.ResponseMessage.Headers as Dictionary<string, string>;
+                header.Add("Location", odataEndPoint.ToString());
             };
 
             return context;
@@ -84,6 +92,18 @@ namespace InLooxOData
             var responseString = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<TokenResponse>(responseString);
+        }
+
+        public static DataServiceCollection<T> GetDSCollection<T>(IEnumerable<T> query)
+        {
+            var name = typeof(T).Name.ToLower().Split('.').Last();
+            return new DataServiceCollection<T>(query, TrackingMode.AutoChangeTracking, name, null, null);
+        }
+
+        public static DataServiceCollection<T> GetDSCollection<T>(Container ctx)
+        {
+            var name = typeof(T).Name.ToLower().Split('.').Last();
+            return new DataServiceCollection<T>(ctx, name, null, null);
         }
     }
 }
