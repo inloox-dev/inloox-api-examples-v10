@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Examples\TaskQueries.cs" />
+    <Compile Include="Examples\DocumentQueries.cs" />
+    <Compile Include="Examples\Logon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -62,9 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InLooxODataV9\InLooxODataV9.csproj">
+    <ProjectReference Include="..\InLooxOData\InLooxOData.csproj">
       <Project>{f0c28061-09fb-45e1-958d-500eceae7cb8}</Project>
-      <Name>InLooxODataV9</Name>
+      <Name>InLooxOData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
