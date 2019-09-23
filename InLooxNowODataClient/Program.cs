@@ -37,15 +37,19 @@ namespace InLooxnowClient
             var contact = GetCurrentContact(context);
             Console.WriteLine($"Username: {contact.Name}");
 
-            Console.WriteLine("----Example 1: Update Custom field on document  ----");
+            Console.WriteLine("----Example 1: Update custom field on document ----");
             var documentOperations = new DocumentQueries(context);
             documentOperations.UpdateDocumentCustomField();
 
-            Console.WriteLine("----Example 2: Query,Update & create InLoox task----");
+            Console.WriteLine("----Example 2: Query, update & create InLoox task ----");
             var taskOperations = new TaskQueries(context);
             taskOperations.QueryInLooxTask();
             var task = taskOperations.CreateInLooxTask();
             taskOperations.UpdateInLooxTask(task);
+
+            Console.WriteLine("----Example 3: Create user and authentication ---");
+            var ct = new ContactQueries(context);
+            ct.CreateUserAndAuth("user1", "user1@inloox.com", "SecurePassword_1");
 
             Console.WriteLine("done");
             Console.ReadLine();

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Examples\ContactQueries.cs" />
     <Compile Include="Examples\TaskQueries.cs" />
     <Compile Include="Examples\DocumentQueries.cs" />
     <Compile Include="Examples\Logon.cs" />
