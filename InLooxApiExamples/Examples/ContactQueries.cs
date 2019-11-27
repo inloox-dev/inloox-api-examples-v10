@@ -55,7 +55,7 @@ namespace InLooxnowClient.Examples
                 await _ctx.userpermissionextend.addbycontactid(c.ContactId)
                     .GetValueAsync();
             }
-            catch (DataServiceQueryException ex)
+            catch (InvalidOperationException ex)
             {
                 // action is successfull but odata client cant parse response
                 Console.WriteLine(ex.Message);

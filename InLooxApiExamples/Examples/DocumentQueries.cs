@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Default;
+using InLoox.ODataClient;
+using Microsoft.OData.Client;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Default;
-using InLoox.ODataClient.Data.BusinessObjects;
-using Microsoft.OData.Client;
 
 namespace InLooxnowClient.Examples
 {
@@ -18,7 +18,8 @@ namespace InLooxnowClient.Examples
         public async Task UpdateDocumentCustomField()
         {
             // lookup custom field "DocTest" id
-            var ceDefaults = _ctx.customexpanddefaultextend.ToList();
+            var ceDefaults = (await _ctx.customexpanddefaultextend.ExecuteAsync())
+                .ToList();
             var cedDocument = ceDefaults.FirstOrDefault(k => k.DisplayName == "DocTest");
 
             if (cedDocument == null)
@@ -36,7 +37,7 @@ namespace InLooxnowClient.Examples
 
             // need to use DataServiceCollection to use the PostOnlySetProperties feature
             // if you only need to read from the query a ToList() is ok.
-            var docs = new DataServiceCollection<DocumentView>(query);
+            var docs = await ODataBasics.GetDSCollection(query);
 
             Console.WriteLine($"found {docs.Count} document{(docs.Count > 1 ? "s" : string.Empty)}:");
 

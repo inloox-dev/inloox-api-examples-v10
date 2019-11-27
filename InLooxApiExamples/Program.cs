@@ -22,7 +22,8 @@ namespace InLooxnowClient
                 .Result;
 
             // Example for logon with multiple accounts
-            //tokenResponse = Logon.LogonMultipleAccounts(endPoint, username, password, "accountName");
+            //tokenResponse = Logon.LogonMultipleAccounts(endPoint, username,
+            //     password, "accountName");
 
             if (tokenResponse?.AccessToken == null)
             {
@@ -35,7 +36,7 @@ namespace InLooxnowClient
             var context = ODataBasics.GetInLooxContext(endPointOdata,
                 tokenResponse.AccessToken);
 
-            var contact = GetCurrentContact(context);
+            var contact = await GetCurrentContact(context);
             Console.WriteLine($"Username: {contact.Name}");
 
             Console.WriteLine("----Example 1: Update custom field on document ----");
@@ -44,22 +45,23 @@ namespace InLooxnowClient
 
             Console.WriteLine("----Example 2: Query, update & create InLoox task ----");
             var taskOperations = new TaskQueries(context);
-            taskOperations.QueryInLooxTask();
+            await taskOperations.QueryInLooxTask();
             var task = await taskOperations.CreateInLooxTask();
             await taskOperations.UpdateInLooxTask(task);
 
             Console.WriteLine("----Example 3: Create user and authentication ---");
             var ct = new ContactQueries(context);
-            await ct.CreateUserAndAuth("user1", "user1@inloox.com", "SecurePassword_1");
+            await ct.CreateUserAndAuth("user1", "user12@inloox.com", "SecurePassword_1");
 
             Console.WriteLine("done");
             Console.ReadLine();
         }
 
-        private static Contact GetCurrentContact(Container ctx)
+        private static async Task<Contact> GetCurrentContact(Container ctx)
         {
-            var user = ctx.contact.getauthenticated();
-            return user.First();
+            var userRequest = ctx.contact.getauthenticated();
+            var users = await userRequest.ExecuteAsync();
+            return users.First();
         }
     }
 }

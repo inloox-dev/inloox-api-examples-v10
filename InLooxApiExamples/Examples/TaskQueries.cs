@@ -1,6 +1,7 @@
 ﻿using Default;
 using InLoox.ODataClient;
 using InLoox.ODataClient.Data.BusinessObjects;
+using InLoox.ODataClient.Extensions;
 using Microsoft.OData.Client;
 using System;
 using System.Linq;
@@ -50,20 +51,23 @@ namespace InLooxnowClient.Examples
             await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
         }
 
-        public void QueryInLooxTask()
+        public async Task QueryInLooxTask()
         {
-            var wks = _ctx.workpackageview
+            var wkQuery = _ctx.workpackageview
                 .Where(k => k.ChangedDate > DateTime.Now.AddDays(-1))
-                .ToList();
+                .ToDataServiceQuery();
+
+            var wks = await wkQuery.ExecuteAsync();
 
             Console.WriteLine("Tasks changed last 24 hours:");
 
             foreach (var wk in wks)
             {
                 Console.WriteLine($"Task: {wk.Name} {wk.CreatedDate}");
-                var desc = _ctx.planningreservationdescription.Where(k =>
-                        k.PrimaryKey == wk.PlanningReservationId).ToList()
-                    .FirstOrDefault();
+                // FirstOrDefaultSq is a shortcut for .ToDataServiceQuery().FirstOrDefault()
+                var desc = await _ctx.planningreservationdescription.Where(k =>
+                        k.PrimaryKey == wk.PlanningReservationId)
+                    .FirstOrDefaultSq();
 
                 Console.WriteLine($"Description (HTML): {desc?.DescriptionHtml}");
             }
