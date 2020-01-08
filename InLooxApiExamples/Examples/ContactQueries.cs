@@ -1,6 +1,7 @@
 ﻿using Default;
 using InLoox.ODataClient;
 using InLoox.ODataClient.Data.BusinessObjects;
+using IQmedialab.InLoox.Data.Api.Model.OData;
 using Microsoft.OData.Client;
 using System;
 using System.Linq;
@@ -77,6 +78,60 @@ namespace InLooxnowClient.Examples
             var auth = dsAuth.First();
             auth.Password = password;
             await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
+        }
+
+        public async Task EnableAllPermissions(Contact c)
+        {
+            var query = _ctx.userpermissionextend.Where(k => k.ContactId == c.ContactId);
+            var dsPerm = await ODataBasics.GetDSCollection(query);
+            var perm = dsPerm.First();
+            SetAllPermissions(perm, true, false);
+            await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
+        }
+
+        private void SetAllPermissions(UserPermissionExtend perm, bool val, bool permAdministrate)
+        {
+            perm.ProjectCreate = val;
+            perm.ProjectRequestCreate = val;
+            perm.ProjectRequestRelease = val;
+            perm.ProjectRead = val;
+            perm.NoteAccess = val;
+            perm.CheckListAccess = val;
+            perm.MindMapAccess = val;
+            perm.WorkPackageAccess = val;
+            perm.PlanningAccess = val;
+            perm.ActionAccess = val;
+            perm.UserActionAccess = val;
+            perm.DocumentAccess = val;
+            perm.BudgetAccess = val;
+            perm.ProjectModify = val;
+            perm.ManageModify = val;
+            perm.ContactModify = val;
+            perm.AddNote = val;
+            perm.DeleteNote = val;
+            perm.DeleteUserNote = val;
+            perm.ProjectLock = val;
+            perm.CheckListModify = val;
+            perm.MindMapModify = val;
+            perm.WorkPackageModify = val;
+            perm.PlanningModify = val;
+            perm.ActionModify = val;
+            perm.UserActionModify = val;
+            perm.FreeActionModify = val;
+            perm.DocumentModify = val;
+            perm.BudgetModify = val;
+            perm.ProjectDelete = val;
+            perm.AddressBookCreate = val;
+            perm.AddressBookRead = val;
+            perm.AddressBookDelete = val;
+            perm.AddressBookModify = val;
+            perm.UserAddressBookRead = val;
+            perm.UserAddressBookModify = val;
+            perm.UserAddressBookDelete = val;
+            perm.ReportRead = val;
+            perm.ReportModify = val;
+            perm.EmailTemplateModify = val;
+            perm.PermissionsAdministrate = permAdministrate;
         }
     }
 }
