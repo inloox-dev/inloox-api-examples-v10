@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InLoox.ODataClient" Version="10.0.2" />
+    <PackageReference Include="InLoox.ODataClient" Version="10.0.4" />
   </ItemGroup>
 
 </Project>

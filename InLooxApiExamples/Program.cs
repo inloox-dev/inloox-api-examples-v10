@@ -52,6 +52,10 @@ namespace InLooxnowClient
             Console.WriteLine("----Example 3: Create user and authentication ---");
             var ct = new ContactQueries(context);
             await ct.CreateUserAndAuth("user1", "user12@inloox.com", "SecurePassword_1");
+            
+            Console.WriteLine("----Example 4: Patch custom expand on task---");
+            var ceq = new CustomExpandQueries(context);
+            await ceq.PatchTaskCustomExpand();
 
             Console.WriteLine("done");
             Console.ReadLine();

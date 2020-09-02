@@ -58,7 +58,7 @@ namespace InLooxnowClient.Examples
             }
             catch (InvalidOperationException ex)
             {
-                // action is successfull but odata client cant parse response
+                // action is successful but odata client cant parse response
                 Console.WriteLine(ex.Message);
             }
             _ctx.SendingRequest2 -= _ctx_SendingRequest2;
