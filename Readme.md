@@ -2,6 +2,10 @@
 
 a collection of code examples to work with InLoox.ODataClient nuget package https://www.nuget.org/packages/InLoox.ODataClient/
 
+Start coding: 
+<a href="https://online.visualstudio.com/environments/new?name=New%20InLoox%20Client&repo=inloox-dev/inloox-api-examples">
+    <img src="https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Faka.ms%2Fvso-badge">
+</a>
 
 ## Setup
 1. Enter your credentials [username/password](https://github.com/inloox-dev/inloox-api-client/blob/2ca69ca8110d32fbe05d9a1a15fc81613512331b/InLooxNowODataClient/Program.cs#L17).
