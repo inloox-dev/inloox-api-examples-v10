@@ -33,7 +33,7 @@ namespace InLooxApiExamples
         {
             while (true)
             {
-                Console.WriteLine("Enter Number to run Example (1-6) or q to exit:");
+                Console.WriteLine("Enter Number to run Example (1-7) or q to exit:");
                 var selection = args.Length == 1 ? args[0] : Console.ReadLine();
                 if (selection.Trim().ToLower() == "q")
                     return;
@@ -80,14 +80,19 @@ namespace InLooxApiExamples
                     await ceq.PatchTaskCustomExpand();
                     break;
                 case 5:
-                    Console.WriteLine("----Example 5: Upload Document");
+                    Console.WriteLine("----Example 5: Upload document");
                     var documentExample = new DocumentExample(context);
                     await documentExample.AddExampleFileToProject();
                     break;
                 case 6:
-                    Console.WriteLine("----Example 6: CreateFolder");
+                    Console.WriteLine("----Example 6: Create folder");
                     documentExample = new DocumentExample(context);
                     await documentExample.CreateFolderAndListContent();
+                    break;
+                case 7:
+                    Console.WriteLine("----Example 7: Get latest document changes");
+                    documentExample = new DocumentExample(context);
+                    await documentExample.GetLatestChanges();
                     break;
                 default:
                     Console.WriteLine($"Unkown Command {number}");

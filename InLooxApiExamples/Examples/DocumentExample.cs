@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Default;
 using InLoox.ODataClient;
 using InLoox.ODataClient.Services;
+using IQmedialab.InLoox.Data.Api.Model.OData;
 using Microsoft.OData.Client;
 
 namespace InLooxApiExamples.Examples
@@ -38,11 +40,10 @@ namespace InLooxApiExamples.Examples
         {
             var projects = new ProjectService(_ctx);
             var project = await projects.GetFirstOpenProjectByName();
-            Console.WriteLine(project.Name);
+            Console.WriteLine("Using Project: " + project.Name);
+
             var documentService = new DocumentService(_ctx);
-
             var folder = await documentService.CreateFolder("testfolder", project.ProjectId);
-
 
             Console.WriteLine("List Folders");
             var folders = await documentService.GetFolders(project.ProjectId);
@@ -51,13 +52,9 @@ namespace InLooxApiExamples.Examples
                 Console.WriteLine($"Id:{f.DocumentFolderId} FolderName:{f.FolderName}");
             }
 
-            Console.WriteLine("List Entries");
             var entries = (await documentService.GetDocumentEntries(project.ProjectId))
                 .ToList();
-            foreach (var e in entries)
-            {
-                Console.WriteLine($"Id:{e.PrimaryKey} Name:{e.Name} IsFolder:{e.IsFolder}");
-            }
+            PrintDocumentEntries(entries);
 
             await documentService.DeleteFolder(folder.DocumentFolderId);
 
@@ -67,6 +64,26 @@ namespace InLooxApiExamples.Examples
             var resp = await documentService.DownloadDocument(doc.PrimaryKey);
             await using var file = File.OpenWrite(doc.Name);
             await resp.Content.CopyToAsync(file);
+        }
+
+        private static void PrintDocumentEntries(IEnumerable<DocumentEntry> entries)
+        {
+            Console.WriteLine("List Entries");
+            foreach (var e in entries)
+            {
+                Console.WriteLine($"Id:{e.PrimaryKey} Name:{e.Name} IsFolder:{e.IsFolder}");
+            }
+        }
+
+        public async Task GetLatestChanges()
+        {
+            var projects = new ProjectService(_ctx);
+            var project = await projects.GetFirstOpenProjectByName();
+            Console.WriteLine("Using Project: " + project.Name);
+            var documentService = new DocumentService(_ctx);
+
+            var entries = await documentService.GetLatestChanges(0, 100);
+            PrintDocumentEntries(entries);
         }
 
         public async Task UpdateDocumentCustomField()
