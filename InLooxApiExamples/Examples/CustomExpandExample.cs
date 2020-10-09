@@ -1,17 +1,17 @@
-using Default;
-using InLoox.ODataClient;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Default;
+using InLoox.ODataClient;
 using InLoox.ODataClient.Extensions;
 
-namespace InLooxnowClient.Examples
+namespace InLooxApiExamples.Examples
 {
-    public class CustomExpandQueries
+    public class CustomExpandExample
     {
         private readonly Container _ctx;
 
-        public CustomExpandQueries(Container ctx)
+        public CustomExpandExample(Container ctx)
         {
             _ctx = ctx;
         }

@@ -1,19 +1,19 @@
-﻿using Default;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Default;
 using InLoox.ODataClient;
 using InLoox.ODataClient.Data.BusinessObjects;
 using InLoox.ODataClient.Extensions;
 using Microsoft.OData.Client;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace InLooxnowClient.Examples
+namespace InLooxApiExamples.Examples
 {
-    public class TaskQueries
+    public class TaskExample
     {
         private readonly Container _ctx;
 
-        public TaskQueries(Container ctx)
+        public TaskExample(Container ctx)
         {
             _ctx = ctx;
         }
@@ -39,7 +39,7 @@ namespace InLooxnowClient.Examples
             return wk;
         }
 
-        public async Task UpdateInLooxTask(WorkPackageView task)
+        public async Task UpdateTaskName(WorkPackageView task)
         {
             var query = _ctx.workpackageview
                 .Where(k => k.PlanningReservationId == task.PlanningReservationId);
@@ -51,7 +51,7 @@ namespace InLooxnowClient.Examples
             await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
         }
 
-        public async Task QueryInLooxTask()
+        public async Task QueryLastChangedInLooxTasks()
         {
             var wkQuery = _ctx.workpackageview
                 .Where(k => k.ChangedDate > DateTime.Now.AddDays(-1))

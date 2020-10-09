@@ -1,19 +1,19 @@
-﻿using Default;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Default;
 using InLoox.ODataClient;
 using InLoox.ODataClient.Data.BusinessObjects;
 using IQmedialab.InLoox.Data.Api.Model.OData;
 using Microsoft.OData.Client;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace InLooxnowClient.Examples
+namespace InLooxApiExamples.Examples
 {
-    public class ContactQueries
+    public class ContactExample
     {
         private readonly Container _ctx;
 
-        public ContactQueries(Container ctx)
+        public ContactExample(Container ctx)
         {
             _ctx = ctx;
         }
