@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\inloox-odata-client\InLoox.OdataClient\InLoox.ODataClient.csproj" />
+    <PackageReference Include="InLoox.ODataClient" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
