@@ -86,6 +86,33 @@ namespace InLooxApiExamples.Examples
             PrintDocumentEntries(entries);
         }
 
+        internal async Task MoveDocument()
+        {
+            var projects = new ProjectService(_ctx);
+            var project = await projects.GetFirstOpenProjectByName();
+
+            Console.WriteLine($"Choosing Project {project.Name}");
+
+            var documentService = new DocumentService(_ctx);
+            var documents = await documentService.GetFiles(project.ProjectId);
+            var document = documents.First();
+
+            var folderName = $"Folder {DateTime.Now}";
+            Console.WriteLine($"Create folder '{folderName}' in {document.FolderPath}");
+            var folder = await documentService.CreateFolder(folderName, document.ProjectId, document.DocumentFolderId);
+
+            Console.WriteLine($"Moving document {document.FileName} to {folder.FolderName}");
+            var success = await documentService.MoveDocument(document.DocumentId, folder.DocumentFolderId);
+            if (success)
+            {
+                Console.WriteLine("successfully moved document");
+            }
+            else
+            {
+                Console.WriteLine($"error while moving document to {folder.FolderName}");
+            }
+        }
+
         public async Task UpdateDocumentCustomField()
         {
             // lookup custom field "DocTest" id

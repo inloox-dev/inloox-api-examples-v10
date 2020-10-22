@@ -33,7 +33,7 @@ namespace InLooxApiExamples
         {
             while (true)
             {
-                Console.WriteLine("Enter Number to run Example (1-7) or q to exit:");
+                Console.WriteLine("Enter Number to run Example (1-9) or q to exit:");
                 var selection = args.Length == 1 ? args[0] : Console.ReadLine();
                 if (selection.Trim().ToLower() == "q")
                     return;
@@ -93,6 +93,16 @@ namespace InLooxApiExamples
                     Console.WriteLine("----Example 7: Get latest document changes");
                     documentExample = new DocumentExample(context);
                     await documentExample.GetLatestChanges();
+                    break;
+                case 8:
+                    Console.WriteLine("----Example 8: Move Document");
+                    documentExample = new DocumentExample(context);
+                    await documentExample.MoveDocument();
+                    break;
+                case 9:
+                    Console.WriteLine("----Example 9: DocumentSync Endpoint");
+                    var documentSyncExample = new DocumentSyncExample(context);
+                    await documentSyncExample.GetLatestChanges();
                     break;
                 default:
                     Console.WriteLine($"Unkown Command {number}");
