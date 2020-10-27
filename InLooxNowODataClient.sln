@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InLooxApiExamples", "InLooxApiExamples\InLooxApiExamples.csproj", "{87B84D52-2098-4BD2-B252-3BBFCD749C25}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InLoox.ODataClient", "..\inloox-odata-client\InLoox.OdataClient\InLoox.ODataClient.csproj", "{F712A236-F55C-4B23-9D24-5272DC5AFB84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InLooxApiExampleTests", "InLooxApiExamplesTests\InLooxApiExampleTests.csproj", "{21518907-AA8D-48E7-8585-332C3DA6BF26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{87B84D52-2098-4BD2-B252-3BBFCD749C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87B84D52-2098-4BD2-B252-3BBFCD749C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87B84D52-2098-4BD2-B252-3BBFCD749C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F712A236-F55C-4B23-9D24-5272DC5AFB84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F712A236-F55C-4B23-9D24-5272DC5AFB84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F712A236-F55C-4B23-9D24-5272DC5AFB84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F712A236-F55C-4B23-9D24-5272DC5AFB84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21518907-AA8D-48E7-8585-332C3DA6BF26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21518907-AA8D-48E7-8585-332C3DA6BF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21518907-AA8D-48E7-8585-332C3DA6BF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21518907-AA8D-48E7-8585-332C3DA6BF26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

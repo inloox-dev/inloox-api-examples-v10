@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Default;
 using InLoox.ODataClient;
+using InLoox.ODataClient.Extensions;
 using InLoox.ODataClient.Services;
 using IQmedialab.InLoox.Data.Api.Model.OData;
 using Microsoft.OData.Client;
@@ -111,6 +112,41 @@ namespace InLooxApiExamples.Examples
             {
                 Console.WriteLine($"error while moving document to {folder.FolderName}");
             }
+        }
+
+        internal async Task RenameDocumentAndFolder()
+        {
+            var file = await _ctx.documentview.OrderBy(k => k.FileName)
+                .FirstOrDefaultSq();
+
+            var docService = new DocumentService(_ctx);
+            var oldName = Path.GetFileNameWithoutExtension(file.FileName);
+            var newName = oldName + "1";
+            var fileExtension = Path.GetExtension(file.FileName);
+
+            Console.WriteLine($"Renaming {oldName} from project {file.ProjectName} to {newName}");
+            await docService.RenameDocument(file.DocumentId, newName + fileExtension);
+
+            var folderName = "SomeText";
+            var newFolderName = "SomeText_" + DateTime.Now.Ticks;
+            Console.WriteLine($"Create Folder {folderName}");
+            var folder = await docService.CreateFolder(folderName, file.ProjectId);
+            await docService.RenameFolder(folder.DocumentFolderId, newFolderName);
+        }
+
+        internal async Task UpdateFileInfo()
+        {
+            var targetFile = await _ctx.documentview.OrderBy(k => k.FileName)
+                .FirstOrDefaultSq();
+
+            var docService = new DocumentService(_ctx);
+            // load with DataServiceCollection to use PostOnlySetProperties on SaveChangesAsync
+            var file = await docService.GetDocumentFromCollection(targetFile.DocumentId);
+            file.IsHidden = true;
+            file.CreatedDate = DateTime.Now;
+            file.ChangedDate = DateTime.Now;
+
+            await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
         }
 
         public async Task UpdateDocumentCustomField()
