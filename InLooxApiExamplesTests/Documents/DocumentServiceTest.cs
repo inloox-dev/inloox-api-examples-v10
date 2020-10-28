@@ -29,49 +29,50 @@ namespace InLooxApiTests.Documents
         [TestMethod]
         public async Task UpdateIsHidden_SetTrue_ShouldChangeProperty()
         {
-            var file = await UploadFile();
-            file.IsHidden = true;
-            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
-
-            file = await GetDocument(file.DocumentId);
-            Assert.AreEqual(true, file.IsHidden, "setting IsHidden failed");
+            await UpdateDocumentField(nameof(DocumentView.IsHidden),
+                d => d.IsHidden = true,
+                d => d.IsHidden,
+                true);
         }
 
         [TestMethod]
-        public async Task UpdateCreatedDate_SetToNow_ShouldChangeProperty()
+        public async Task UpdateFileCreatedDate_FixedDate_ShouldChangeProperty()
         {
-            var date = DateTimeOffset.Now;
+            var date = new DateTimeOffset(2020, 10, 28, 10, 0, 0, TimeSpan.FromHours(1));
 
-            var file = await UploadFile();
-            file.CreatedDate = date;
-            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
-
-            file = await GetDocument(file.DocumentId);
-            AssertDateTimeOffset(date, file.CreatedDate);
+            await UpdateDocumentField(nameof(DocumentView.FileCreatedDate),
+                d => d.FileCreatedDate = date,
+                d => d.FileCreatedDate.Value,
+                date);
         }
 
         [TestMethod]
-        public async Task UpdateChangedDate_SetToNow_ShouldChangeProperty()
+        public async Task UpdateFileChangedDate_FixedDate_ShouldChangeProperty()
         {
-            var date = DateTimeOffset.Now;
+            var date = new DateTimeOffset(2020, 10, 28, 10, 0, 0, TimeSpan.FromHours(1));
 
-            var file = await UploadFile();
-            file.ChangedDate = date;
-            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
-
-            file = await GetDocument(file.DocumentId);
-            AssertDateTimeOffset(date, file.ChangedDate.Value);
+            await UpdateDocumentField(nameof(DocumentView.FileChangedDate),
+                d => d.FileChangedDate = date,
+                d => d.FileChangedDate.Value,
+                date);
         }
 
-        private void AssertDateTimeOffset(DateTimeOffset d1, DateTimeOffset d2)
+        private async Task UpdateDocumentField(string propName,
+            Action<DocumentView> setterFunc, Func<DocumentView, object> getterFunc, object newVal)
         {
-            Assert.IsTrue(TimeSpan.FromSeconds(1) > d2 - d1,
-                $"DateTime differ {d2 - d1} which is more than a second: {d1}, {d2}");
+            var (documentId, _) = await this.UploadDocumentToFirstProject("logo.jpg");
+            var file = await GetDocument(documentId);
+
+            setterFunc(file);
+            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
+
+            file = await GetDocument(documentId);
+            Assert.AreEqual(newVal, getterFunc(file), $"Couldnt set {propName}");
         }
 
         private async Task<DocumentView> UploadFile()
         {
-            var (documentId, _) = await this.UploadDocumentToFirstProject("logo.jpg");
+            var (documentId, _) = await this.UploadDocumentToFirstProject($"logo_{DateTime.Now.Ticks}.jpg");
             var file = await GetDocument(documentId);
 
             return file;
