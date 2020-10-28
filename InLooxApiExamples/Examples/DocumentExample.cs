@@ -145,7 +145,9 @@ namespace InLooxApiExamples.Examples
             file.IsHidden = true;
             file.FileChangedDate = DateTime.Now;
             file.FileCreatedDate = DateTime.Now;
-
+            Console.WriteLine(
+                $"Updating file '{file.FileName}' FileChangedDate={file.FileChangedDate} and " +
+                $"FileCreatedDate={file.FileCreatedDate}");
             await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
         }
 
