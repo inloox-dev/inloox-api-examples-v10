@@ -143,8 +143,8 @@ namespace InLooxApiExamples.Examples
             // load with DataServiceCollection to use PostOnlySetProperties on SaveChangesAsync
             var file = await docService.GetDocumentFromCollection(targetFile.DocumentId);
             file.IsHidden = true;
-            file.CreatedDate = DateTime.Now;
-            file.ChangedDate = DateTime.Now;
+            file.FileChangedDate = DateTime.Now;
+            file.FileCreatedDate = DateTime.Now;
 
             await _ctx.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
         }
