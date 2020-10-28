@@ -1,11 +1,9 @@
-﻿using InLoox.ODataClient;
-using InLoox.ODataClient.Services;
+﻿using InLoox.ODataClient.Services;
 using IQmedialab.InLoox.Data.Api.Model.OData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using InLoox.ODataClient.Extensions;
 
 namespace InLooxApiTests.Documents
 {
@@ -15,7 +13,7 @@ namespace InLooxApiTests.Documents
         [TestMethod]
         public async Task MoveDocument_ToNewFolder_ShouldUpdateDocumentSync()
         {
-            var (documentId, project) = await this.UploadDocument($"logo{DateTime.Now.Ticks}.jpg");
+            var (documentId, project) = await this.UploadDocumentToFirstProject($"logo{DateTime.Now.Ticks}.jpg");
             
             Context.MergeOption = Microsoft.OData.Client.MergeOption.NoTracking;
 

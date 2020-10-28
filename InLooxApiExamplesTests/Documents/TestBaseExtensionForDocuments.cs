@@ -8,7 +8,7 @@ namespace InLooxApiTests.Documents
 {
     static class TestBaseExtensionForDocuments
     {
-        public static async Task<(Guid, ProjectView)> UploadDocument(this TestBase testBase, string name)
+        public static async Task<(Guid, ProjectView)> UploadDocumentToFirstProject(this TestBase testBase, string name)
         {
             var projectService = new ProjectService(testBase.Context);
             var project = await projectService.GetFirstOpenProjectByName();

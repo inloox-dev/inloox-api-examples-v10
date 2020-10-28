@@ -1,10 +1,8 @@
-﻿using InLoox.ODataClient;
-using InLoox.ODataClient.Data.BusinessObjects;
+﻿using InLoox.ODataClient.Data.BusinessObjects;
 using InLoox.ODataClient.Services;
 using Microsoft.OData.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace InLooxApiTests.Documents
@@ -12,19 +10,18 @@ namespace InLooxApiTests.Documents
     [TestClass]
     public class DocumentServiceTest : TestBase
     {
+
         [TestMethod]
         public async Task RenameDocument_WithNewName_ShouldChangeFileName()
         {
-            var oldName = "logo.jpg";
             var newName = "logo_1.jpg";
 
-            var (documentId, project) = await this.UploadDocument(oldName);
+            var file = await UploadFile();
 
             var docService = new DocumentService(Context);
-            await docService.RenameDocument(documentId, newName);
+            await docService.RenameDocument(file.DocumentId, newName);
 
-            var files = await docService.GetFiles(project.ProjectId);
-            var file = files.First(k => k.DocumentId == documentId);
+            file = await GetDocument(file.DocumentId);
 
             Assert.AreEqual(newName, file.FileName);
         }
@@ -32,53 +29,58 @@ namespace InLooxApiTests.Documents
         [TestMethod]
         public async Task UpdateIsHidden_SetTrue_ShouldChangeProperty()
         {
-            await UpdateDocumentField(nameof(DocumentView.IsHidden),
-                (d) => d.IsHidden = true,
-                (d) => d.IsHidden,
-                true);
+            var file = await UploadFile();
+            file.IsHidden = true;
+            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
+
+            file = await GetDocument(file.DocumentId);
+            Assert.AreEqual(true, file.IsHidden, "setting IsHidden failed");
         }
 
         [TestMethod]
         public async Task UpdateCreatedDate_SetToNow_ShouldChangeProperty()
         {
-            var date = DateTime.Now;
+            var date = DateTimeOffset.Now;
 
-            await UpdateDocumentField(nameof(DocumentView.CreatedDate),
-                (d) => d.CreatedDate = date,
-                (d) => d.CreatedDate,
-                date);
+            var file = await UploadFile();
+            file.CreatedDate = date;
+            await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
+
+            file = await GetDocument(file.DocumentId);
+            AssertDateTimeOffset(date, file.CreatedDate);
         }
 
         [TestMethod]
         public async Task UpdateChangedDate_SetToNow_ShouldChangeProperty()
         {
-            var date = DateTime.Now;
+            var date = DateTimeOffset.Now;
 
-            await UpdateDocumentField(nameof(DocumentView.ChangedDate),
-                (d) => d.ChangedDate = date,
-                (d) => d.ChangedDate,
-                date);
-        }
-
-        private async Task UpdateDocumentField(string propName,
-            Action<DocumentView> setterFunc, Func<DocumentView, object> getterFunc, object newVal)
-        {
-            var (documentId, _) = await this.UploadDocument("logo.jpg");
-            var file = await GetDocumentFromCollection(documentId);
-
-            setterFunc(file);
+            var file = await UploadFile();
+            file.ChangedDate = date;
             await Context.SaveChangesAsync(SaveChangesOptions.PostOnlySetProperties);
 
-            file = await GetDocumentFromCollection(documentId);
-            Assert.AreEqual(newVal, getterFunc(file), $"Couldnt set {propName}");
+            file = await GetDocument(file.DocumentId);
+            AssertDateTimeOffset(date, file.ChangedDate.Value);
         }
 
-        private async Task<DocumentView> GetDocumentFromCollection(Guid documentId)
+        private void AssertDateTimeOffset(DateTimeOffset d1, DateTimeOffset d2)
         {
-            var collection = await ODataBasics.GetDSCollection(
-                Context.documentview.Where(k => k.DocumentId == documentId)
-            );
-            return collection.First();
+            Assert.IsTrue(TimeSpan.FromSeconds(1) > d2 - d1,
+                $"DateTime differ {d2 - d1} which is more than a second: {d1}, {d2}");
+        }
+
+        private async Task<DocumentView> UploadFile()
+        {
+            var (documentId, _) = await this.UploadDocumentToFirstProject("logo.jpg");
+            var file = await GetDocument(documentId);
+
+            return file;
+        }
+
+        private Task<DocumentView> GetDocument(Guid documentId)
+        {
+            var docService = new DocumentService(Context);
+            return docService.GetDocumentFromCollection(documentId);
         }
     }
 }
