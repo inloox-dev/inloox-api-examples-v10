@@ -3,6 +3,7 @@ using InLoox.ODataClient.Services;
 using Microsoft.OData.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace InLooxApiTests.Documents
@@ -24,6 +25,28 @@ namespace InLooxApiTests.Documents
             file = await GetDocument(file.DocumentId);
 
             Assert.AreEqual(newName, file.FileName);
+        }
+
+        [TestMethod]
+        public async Task ReplaceDocument_ImageFile_ShouldReplaceTheOldFile()
+        {
+            var fileOriginal = await UploadFile();
+            var logoNoTextRaw = File.ReadAllBytes("./ExampleData/inloox_logo_no_text.png");
+
+            using var memoryStream = new MemoryStream(logoNoTextRaw);
+
+            var docService = new DocumentService(Context);
+            var success = await docService.ReplaceDocument(fileOriginal.DocumentId, memoryStream);
+            Assert.IsTrue(success, "replace document unsuccessfull");
+
+            var resp = await docService.DownloadDocument(fileOriginal.DocumentId);
+            var logoDownloadedRaw = await resp.Content.ReadAsByteArrayAsync();
+
+            CollectionAssert.AreEqual(logoNoTextRaw, logoDownloadedRaw, "content is not the same");
+
+            // filesize is not updated
+            //var fileReplaced = await docService.GetDocumentFromCollection(fileOriginal.DocumentId);
+            //Assert.AreNotEqual(fileOriginal.FileSize, fileReplaced.FileSize);
         }
 
         [TestMethod]
